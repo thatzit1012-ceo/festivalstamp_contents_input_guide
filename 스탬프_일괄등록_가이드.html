@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스탬프 일괄 등록 사용 가이드 — 축제스탬프투어</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    font-size: 14px;
+    color: #1a1a2e;
+    background: #f8f7fc;
+    line-height: 1.7;
+  }
+
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  /* ── 표지 ── */
+  .cover {
+    background: linear-gradient(135deg, #7b3fe4 0%, #9b68f5 100%);
+    border-radius: 16px;
+    padding: 60px 48px 48px;
+    color: #fff;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    right: 40px; bottom: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+  }
+  .cover-tag {
+    display: inline-block;
+    background: rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    letter-spacing: .5px;
+    margin-bottom: 20px;
+  }
+  .cover h1 { font-size: 36px; font-weight: 900; margin-bottom: 8px; }
+  .cover .sub { font-size: 18px; font-weight: 400; opacity: .85; margin-bottom: 32px; }
+  .cover-list { list-style: none; }
+  .cover-list li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; opacity: .9; margin-bottom: 8px;
+  }
+  .cover-list li::before {
+    content: '✓';
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px;
+    background: rgba(255,255,255,.25);
+    border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── 섹션 ── */
+  .section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    border: 1px solid #ede8fb;
+    box-shadow: 0 2px 8px rgba(123,63,228,.06);
+  }
+  .section-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 18px; font-weight: 700;
+    color: #7b3fe4;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #ede8fb;
+  }
+  .section-title .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px;
+    background: #7b3fe4; color: #fff;
+    border-radius: 50%; font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── 비교표 ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th {
+    background: #7b3fe4; color: #fff; font-weight: 600;
+    padding: 10px 12px; text-align: center;
+  }
+  td { padding: 9px 12px; border: 1px solid #e8e0f8; }
+  tr:nth-child(even) td { background: #f8f4ff; }
+  tr:nth-child(odd)  td { background: #fff; }
+  td:first-child { font-weight: 600; color: #5a3c9a; }
+
+  /* ── 코드 박스 ── */
+  .code-box {
+    background: #1e1033;
+    color: #c3b5f5;
+    border-radius: 10px;
+    padding: 18px 22px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 2;
+    margin: 14px 0;
+  }
+  .code-box .dim { color: #8060c0; }
+  .code-box .hi  { color: #f5c842; font-weight: 600; }
+
+  /* ── 단계 박스 ── */
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: #faf8ff;
+    border: 1px solid #e0d4f8;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; flex-shrink: 0;
+    background: #7b3fe4; color: #fff;
+    border-radius: 50%; font-weight: 700; font-size: 15px;
+    margin-top: 2px;
+  }
+  .step-content h4 { font-size: 15px; font-weight: 700; color: #4a2090; margin-bottom: 4px; }
+  .step-content p  { font-size: 13px; color: #555; line-height: 1.7; }
+  .step-content code {
+    background: #ede8fb; color: #6030c0;
+    padding: 1px 6px; border-radius: 4px;
+    font-family: monospace; font-size: 12px;
+  }
+
+  /* ── 알림 박스 ── */
+  .notice {
+    background: #fff8e6;
+    border: 1px solid #ffd060;
+    border-left: 4px solid #f5c842;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px; color: #7a5a00;
+    margin: 14px 0;
+  }
+
+  /* ── FAQ ── */
+  .faq-item { margin-bottom: 18px; }
+  .faq-q {
+    background: #ede8fb;
+    border-radius: 8px 8px 0 0;
+    padding: 11px 16px;
+    font-weight: 700; color: #5030a0;
+    font-size: 13px;
+  }
+  .faq-a {
+    background: #faf8ff;
+    border: 1px solid #e0d4f8;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 11px 16px;
+    font-size: 13px; color: #444;
+  }
+
+  /* ── 컬럼 설명 ── */
+  .col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .col-card {
+    border: 1px solid #e0d4f8;
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: #faf8ff;
+  }
+  .col-card .col-name {
+    font-weight: 700; color: #6030c0; font-size: 13px;
+    display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
+  }
+  .col-card .badge {
+    background: #f00; color: #fff;
+    font-size: 10px; padding: 1px 6px;
+    border-radius: 10px; font-weight: 600;
+  }
+  .col-card .badge.opt {
+    background: #aaa;
+  }
+  .col-card p { font-size: 12px; color: #666; }
+  .col-card .ex { font-size: 11px; color: #9b68f5; margin-top: 4px; font-style: italic; }
+
+  /* ── 매핑표 ── */
+  .map-row {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 6px; font-size: 13px;
+  }
+  .map-seq { width: 50px; text-align: center; font-weight: 700; color: #7b3fe4; }
+  .map-arrow { width: 30px; text-align: center; color: #bbb; }
+  .map-file { width: 130px; font-family: monospace; font-size: 12px; color: #333; }
+  .map-result { flex: 1; color: #555; }
+  .map-result.default { color: #999; font-style: italic; }
+
+  /* ── 인쇄 ── */
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .page { max-width: 100%; padding: 0; }
+    .section { break-inside: avoid; box-shadow: none; }
+    .cover { border-radius: 0; }
+  }
+
+  ul.guide-list { padding-left: 20px; }
+  ul.guide-list li { margin-bottom: 5px; font-size: 13px; color: #444; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 표지 -->
+  <div class="cover">
+    <div class="cover-tag">축제스탬프투어 관리자 가이드</div>
+    <h1>스탬프 일괄 등록</h1>
+    <p class="sub">사용 가이드 · Excel + ZIP 업로드</p>
+    <ul class="cover-list">
+      <li>스탬프 정보 입력 방법 (6개 컬럼)</li>
+      <li>이미지 파일 준비 및 매칭 방법</li>
+      <li>ZIP 파일 구성 방법</li>
+      <li>FAQ</li>
+    </ul>
+  </div>
+
+  <!-- 1. 준비물 -->
+  <div class="section">
+    <div class="section-title"><span class="num">1</span> 준비물</div>
+    <ul class="guide-list">
+      <li><strong>엑셀 파일 (.xlsx)</strong> — 스탬프 정보 목록 (관리자 페이지에서 양식 다운로드)</li>
+      <li><strong>이미지 파일</strong> — 각 스탬프의 대표 이미지 <em>(없어도 됩니다 — 기본 이미지 자동 적용)</em></li>
+    </ul>
+    <div class="notice">
+      ⚠️ 이미지를 제공하지 않은 스탬프에는 <strong>'이미지 준비중'</strong> 기본 이미지가 자동으로 노출됩니다.
+    </div>
+  </div>
+
+  <!-- 2. 엑셀 작성법 -->
+  <div class="section">
+    <div class="section-title"><span class="num">2</span> 엑셀 파일 작성 방법</div>
+    <p style="margin-bottom:14px;">아래 6개 컬럼을 사용합니다. 관리자 페이지에서 양식을 다운로드하면 헤더가 미리 준비되어 있습니다.</p>
+
+    <div class="col-grid">
+      <div class="col-card">
+        <div class="col-name">순번 <span class="badge">필수</span></div>
+        <p>1부터 순서대로 입력합니다.<br>이미지 파일명과 반드시 일치해야 합니다.</p>
+        <div class="ex">예) 1, 2, 3, 4 …</div>
+      </div>
+      <div class="col-card">
+        <div class="col-name">스탬프명 <span class="badge">필수</span></div>
+        <p>스탬프(장소/콘텐츠)의 이름입니다.<br>앱 화면에 표시되는 이름입니다.</p>
+        <div class="ex">예) 화성 효 마라톤 대회</div>
+      </div>
+      <div class="col-card">
+        <div class="col-name">설명 <span class="badge opt">선택</span></div>
+        <p>스탬프에 대한 간단한 부연 설명입니다.</p>
+        <div class="ex">예) 매년 5월 개최되는 마라톤 행사</div>
+      </div>
+      <div class="col-card">
+        <div class="col-name">주소 <span class="badge opt">선택</span></div>
+        <p>장소의 도로명 또는 지번 주소입니다.</p>
+        <div class="ex">예) 경기도 화성시 반송동 1</div>
+      </div>
+      <div class="col-card">
+        <div class="col-name">위도 <span class="badge opt">선택</span></div>
+        <p>지도 표시용 위도입니다.<br>소수점 4자리 이상 권장합니다.</p>
+        <div class="ex">예) 37.1990</div>
+      </div>
+      <div class="col-card">
+        <div class="col-name">경도 <span class="badge opt">선택</span></div>
+        <p>지도 표시용 경도입니다.<br>소수점 4자리 이상 권장합니다.</p>
+        <div class="ex">예) 126.8320</div>
+      </div>
+    </div>
+
+    <div class="notice" style="margin-top:16px;">
+      ✏️ <strong>작성 시 주의사항</strong><br>
+      • 순번은 1부터 연속된 숫자로 입력 — 이미지 파일명(1.png, 2.jpg …)과 반드시 일치<br>
+      • 스탬프명이 비어있는 행은 자동으로 건너뜁니다<br>
+      • 위도·경도는 소수점 형식으로 입력 (예: 37.5665 / 126.9780)<br>
+      • 행 순서가 앱에서 스탬프 목록의 표시 순서가 됩니다
+    </div>
+  </div>
+
+  <!-- 3. 이미지 준비 -->
+  <div class="section">
+    <div class="section-title"><span class="num">3</span> 이미지 파일 준비 방법</div>
+    <p style="margin-bottom:14px;">이미지 파일명을 <strong>순번.확장자</strong> 형식으로 지정하면 자동으로 해당 스탬프와 매칭됩니다.</p>
+
+    <table style="margin-bottom:16px;">
+      <tr><th style="width:22%">규칙</th><th>내용</th></tr>
+      <tr><td>파일명 형식</td><td><code style="font-family:monospace;">순번.확장자</code> &nbsp; 예) <code style="font-family:monospace;">1.png</code>, <code style="font-family:monospace;">2.jpg</code>, <code style="font-family:monospace;">3.jpeg</code></td></tr>
+      <tr><td>지원 형식</td><td>png &nbsp;·&nbsp; jpg &nbsp;·&nbsp; jpeg &nbsp;·&nbsp; gif &nbsp;·&nbsp; webp</td></tr>
+      <tr><td>저장 위치</td><td>ZIP 안의 <code style="font-family:monospace;">images/</code> 폴더</td></tr>
+      <tr><td>이미지 없을 때</td><td>'이미지 준비중' 기본 이미지 자동 적용</td></tr>
+      <tr><td>권장 해상도</td><td>800 × 800 픽셀 이상 (정사각형 권장)</td></tr>
+    </table>
+
+    <strong style="font-size:13px;color:#4a2090;">이미지 매칭 예시</strong>
+    <div style="margin-top:10px;background:#faf8ff;border-radius:8px;padding:14px 18px;">
+      <div class="map-row"><span class="map-seq">순번 1</span><span class="map-arrow">→</span><span class="map-file">images/1.png</span><span class="map-result">1번 스탬프 이미지로 등록</span></div>
+      <div class="map-row"><span class="map-seq">순번 2</span><span class="map-arrow">→</span><span class="map-file">images/2.jpg</span><span class="map-result">2번 스탬프 이미지로 등록</span></div>
+      <div class="map-row"><span class="map-seq">순번 3</span><span class="map-arrow">→</span><span class="map-file">(파일 없음)</span><span class="map-result default">기본 이미지 '이미지 준비중' 자동 적용</span></div>
+      <div class="map-row"><span class="map-seq">순번 4</span><span class="map-arrow">→</span><span class="map-file">images/4.jpeg</span><span class="map-result">4번 스탬프 이미지로 등록</span></div>
+    </div>
+  </div>
+
+  <!-- 4. ZIP 구성 -->
+  <div class="section">
+    <div class="section-title"><span class="num">4</span> ZIP 파일 구성 방법</div>
+    <p style="margin-bottom:12px;">엑셀 파일과 이미지 폴더를 하나의 ZIP 파일로 묶습니다.</p>
+
+    <strong style="font-size:13px;color:#4a2090;">ZIP 내부 구조</strong>
+    <div class="code-box">
+      <span class="hi">upload.zip</span><br>
+      <span class="dim">├──</span> 스탬프목록.xlsx &nbsp;&nbsp;&nbsp;<span class="dim">← 엑셀 파일 (파일명 자유)</span><br>
+      <span class="dim">└──</span> <span class="hi">images/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">← 폴더명은 반드시 'images'</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">├──</span> 1.png<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">├──</span> 2.jpg<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">├──</span> 3.png<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">└──</span> 4.jpeg
+    </div>
+
+    <strong style="font-size:13px;color:#4a2090;">ZIP 만드는 방법 (Windows)</strong>
+    <ul class="guide-list" style="margin-top:8px;">
+      <li>엑셀 파일과 <code>images</code> 폴더를 같은 위치에 놓습니다</li>
+      <li>두 항목을 함께 선택 (Ctrl+클릭)</li>
+      <li>마우스 우클릭 → <strong>'압축(ZIP 폴더로)'</strong> 또는 <strong>'보내기 → 압축(ZIP) 폴더'</strong></li>
+      <li>생성된 .zip 파일을 업로드에 사용합니다</li>
+    </ul>
+    <div class="notice" style="margin-top:12px;">
+      ⚠️ <code>images</code> 폴더명은 반드시 영문 소문자 <strong>images</strong> 로 지정해야 합니다.<br>
+      ⚠️ 엑셀 파일은 ZIP 최상위에 위치해야 합니다 (하위 폴더 안에 있으면 인식 안 됨).
+    </div>
+  </div>
+
+  <!-- 5. FAQ -->
+  <div class="section">
+    <div class="section-title"><span class="num">5</span> 자주 묻는 질문 (FAQ)</div>
+    <div class="faq-item">
+      <div class="faq-q">Q1. 이미지 없이 엑셀만 업로드해도 되나요?</div>
+      <div class="faq-a">네, 가능합니다. <code>images/</code> 폴더 없이 엑셀만 ZIP에 포함하거나, 이미지가 없는 스탬프는 파일을 생략하면 '이미지 준비중' 기본 이미지가 자동 적용됩니다.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q2. 이미 스탬프가 등록된 행사에 추가 업로드해도 되나요?</div>
+      <div class="faq-a">스탬프 콘텐츠 추가는 가능합니다. 단, 추가된 항목은 기존 항목들 뒤에 위치합니다. <strong>기존 항목들 사이에 위치하는 것은 불가합니다.</strong></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q3. 업로드 중 일부만 실패하면 어떻게 되나요?</div>
+      <div class="faq-a">성공한 항목은 정상 등록되고, 실패한 항목만 결과 화면에 오류 내역이 표시됩니다. 실패 항목만 수정하여 별도 ZIP으로 재업로드하면 됩니다.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q4. ZIP 파일 크기 제한이 있나요?</div>
+      <div class="faq-a">100MB 이하를 권장합니다. 이미지가 많을 경우 800px 내외로 리사이즈하여 용량을 줄여주세요.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q5. 이미지 형식이 JPG인데 PNG로 바꿔야 하나요?</div>
+      <div class="faq-a">아니요, png · jpg · jpeg · gif · webp 모두 지원합니다. 파일명만 <code>순번.jpg</code> 형식으로 맞춰주면 됩니다.</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:20px;color:#bbb;font-size:12px;">
+    축제스탬프투어 &nbsp;|&nbsp; 관리자 가이드 &nbsp;|&nbsp; 스탬프 일괄 등록
+  </div>
+
+</div>
+</body>
+</html>
